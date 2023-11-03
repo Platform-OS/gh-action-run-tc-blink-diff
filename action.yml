@@ -1,0 +1,75 @@
+name: 'platformOS/RunTestCafeTest'
+description: run TestCafe test
+inputs:
+  test-name:
+    description: 'test name'
+    required: true
+  before:
+    required: false
+  after:
+    required: false
+  skip:
+    required: false
+  npm-prefix:
+    required: false
+    default: "."
+runs:
+  using: "composite"
+  steps:
+
+      - name: before ${{ inputs.test-name }}
+        if: ${{ inputs.before && !inputs.skip }}
+        shell: sh
+        run: |
+          ${{ inputs.before }}
+
+      - name: run ${{ inputs.test-name }}
+        env:
+          REPORT_TYPE: ${{ inputs.test-name }}
+        if: ${{ !inputs.skip }}
+        shell: sh
+        run: |
+          set -e
+          npm run ${{ inputs.test-name }} --prefix ${{ inputs.npm-prefix }}
+
+      - name: after ${{ inputs.test-name }}
+        if: ${{ inputs.after && !inputs.skip }}
+        shell: sh
+        run: |
+          ${{ inputs.after }}
+
+      - name: publish report ${{ inputs.test-name }}
+        if: {{ !inputs.skip && always() }}
+        shell: sh
+        run: |
+          set -eu
+
+          cd generated
+          PAGE_DIR=app/views/pages
+          IMAGE_DIR=app/assets/images
+          UUID=$1
+          mkdir -p $PAGE_DIR $IMAGE_DIR
+          
+          mv Snapshot* $IMAGE_DIR
+          
+          sed -i 's/Snapshot/\/assets\/images\/Snapshot/g' index.html
+          mv index.html $PAGE_DIR/$UUID.liquid
+          
+          # ci
+          MPKIT_URL=$UPLOAD_HOST
+          #MPKIT_URL=https://tests.qa0.oregon.platformos.com
+          pos-cli deploy -p
+          
+          echo $MPKIT_URL/$UUID
+
+      - name: summary
+        if: {{ !inputs.skip && always() }}
+        shell: sh
+        run: |
+          REPORT_TYPE=${{ inputs.test-name }}
+          echo "### FAILED $REPORT_TYPE tests report -> $UPLOAD_HOST/$REPORT_PATH-$REPORT_TYPE" >> $GITHUB_STEP_SUMMARY
+
+      - name: skip ${{ inputs.test-name }}
+        if: ${{ !!inputs.skip }}
+        shell: sh
+        run: echo skipping ${{ inputs.test-name }}
