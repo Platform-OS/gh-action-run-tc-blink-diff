@@ -1,6 +1,9 @@
-name: 'platformOS/RunTestCafeTest'
-description: run TestCafe test
+name: 'platformOS/CompareSnaphosts'
+description: compare-snapshots
 inputs:
+  base:
+    required: true
+    description: base branch for PR
   test-name:
     description: 'test name'
     required: true
@@ -32,38 +35,46 @@ runs:
           set -e
           npm run ${{ inputs.test-name }} --prefix ${{ inputs.npm-prefix }}
 
+      - name: compare screenshots
+        if: ${{ !inputs.skip }}
+        shell: sh
+        run: |
+          set -e
+          npx testcafe-blink-diff ./test/snapshots/Snapshots ./test/visual-tests/generated --compare base:actual --threshold 5 --force
+
+      - name: deploy diff report
+        if: ${{ !inputs.skip }}
+        shell: sh
+        run: |
+          set -eu
+          TIMESTAMP=$(date '+%Y%m%d%H%M%S')
+
+          cd ./test/visual-tests/generated
+
+          PAGE_DIR=app/views/pages
+          IMAGE_DIR=app/assets/images
+
+          mkdir -p $PAGE_DIR $IMAGE_DIR
+
+          mv Snapshot* $IMAGE_DIR
+
+          sed -i 's/Snapshot/\/assets\/images\/Snapshot/g' index.html
+          mv index.html $PAGE_DIR/$TIMESTAMP.liquid
+
+          # ci
+          MPKIT_URL=$UPLOAD_HOST
+          pos-cli deploy -p
+
+          echo $MPKIT_URL/$TIMESTAMP
+
       - name: after ${{ inputs.test-name }}
         if: ${{ inputs.after && !inputs.skip }}
         shell: sh
         run: |
           ${{ inputs.after }}
 
-      - name: publish report ${{ inputs.test-name }}
-        if: {{ !inputs.skip && always() }}
-        shell: sh
-        run: |
-          set -eu
-
-          cd generated
-          PAGE_DIR=app/views/pages
-          IMAGE_DIR=app/assets/images
-          UUID=$1
-          mkdir -p $PAGE_DIR $IMAGE_DIR
-          
-          mv Snapshot* $IMAGE_DIR
-          
-          sed -i 's/Snapshot/\/assets\/images\/Snapshot/g' index.html
-          mv index.html $PAGE_DIR/$UUID.liquid
-          
-          # ci
-          MPKIT_URL=$UPLOAD_HOST
-          #MPKIT_URL=https://tests.qa0.oregon.platformos.com
-          pos-cli deploy -p
-          
-          echo $MPKIT_URL/$UUID
-
       - name: summary
-        if: {{ !inputs.skip && always() }}
+        if: ${{ !inputs.skip && always() }}
         shell: sh
         run: |
           REPORT_TYPE=${{ inputs.test-name }}
