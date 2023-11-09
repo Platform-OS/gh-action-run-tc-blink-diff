@@ -78,13 +78,13 @@ runs:
           payload: |
             {
               "channel": "eng-qa",
+              "text": "Visual regression tests",
               "blocks": [
                 {
                   "type": "header",
                   "text": {
-                      "type": "plain_text",
-                      "text": "Visual regression tests",
-                      "emoji": true
+                    "type": "mrkdwn",
+                    "text": "Project Name"
                   }
                 },
                 {
