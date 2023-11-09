@@ -46,6 +46,7 @@ runs:
           npx testcafe-blink-diff ./test/snapshots/Snapshots ./test/visual-tests/generated --compare base:actual --threshold 5 --force
 
       - name: deploy diff report
+        id: deploy-diff-rep
         if: ${{ !inputs.skip }}
         shell: sh
         run: |
@@ -68,7 +69,7 @@ runs:
           MPKIT_URL=$UPLOAD_HOST
           pos-cli deploy -p
 
-          echo $MPKIT_URL/$TIMESTAMP
+          echo REPORT_URL=$MPKIT_URL/$TIMESTAMP >> GITHUB_OUTPUT
 
       - name: Send custom JSON data to Slack workflow
         id: slack
@@ -83,7 +84,8 @@ runs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                    "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+                    "test": "Linkt to test report: ${{ steps.deploy-diff-rep.outputs.REPORT_URL }}"
                   }
                 }
               ]
