@@ -69,7 +69,7 @@ runs:
           MPKIT_URL=$UPLOAD_HOST
           pos-cli deploy -p
 
-          echo REPORT_URL=$MPKIT_URL/$TIMESTAMP >> GITHUB_OUTPUT
+          echo REPORT_URL=$MPKIT_URL/$TIMESTAMP >> $GITHUB_OUTPUT
 
       - name: Send custom JSON data to Slack workflow
         id: slack
