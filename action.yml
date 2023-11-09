@@ -7,6 +7,9 @@ inputs:
   test-name:
     description: 'test name'
     required: true
+  slack-webhook-url:
+    description: 'slack webhook url'
+    required: true
   before:
     required: false
   after:
@@ -86,7 +89,7 @@ runs:
               ]
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 
+          SLACK_WEBHOOK_URL: ${{ inputs.slack-webhook-url }} 
 
       - name: after ${{ inputs.test-name }}
         if: ${{ inputs.after && !inputs.skip }}
