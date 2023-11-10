@@ -83,22 +83,23 @@ runs:
                 {
                   "type": "header",
                   "text": {
-                    "type": "mrkdwn",
-                    "text": "Project Name"
+                    "type": "plain_text",
+                    "text": "${{ GITHUB_REPOSITORY }}"
                   }
                 },
                 {
                   "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "Link to test report: ${{ steps.deploy-diff-rep.outputs.REPORT_URL }}"
-                    }
-                  ]
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Link to test report: ${{ steps.deploy-diff-rep.outputs.REPORT_URL }}"
+                  }
                 }
               ]
             }
