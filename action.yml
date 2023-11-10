@@ -84,7 +84,7 @@ runs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "${{ GITHUB_REPOSITORY }}"
+                    "text": "${{ github.repository }}"
                   }
                 },
                 {
