@@ -105,6 +105,7 @@ runs:
             }
         env:
           SLACK_WEBHOOK_URL: ${{ inputs.slack-webhook-url }} 
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       - name: after ${{ inputs.test-name }}
         if: ${{ inputs.after && !inputs.skip }}
