@@ -56,13 +56,13 @@ runs:
           cd ./test/visual-tests/generated
 
           PAGE_DIR=app/views/pages
-          IMAGE_DIR=app/assets/images
+          IMAGE_DIR=app/assets/images/$TIMESTAMP
 
           mkdir -p $PAGE_DIR $IMAGE_DIR
 
           mv Snapshot* $IMAGE_DIR
 
-          sed -i 's/Snapshot/\/assets\/images\/Snapshot/g' index.html
+          sed -i "s/Snapshot/\/assets\/images\/$TIMESTAMP\/Snapshot/g" index.html
           mv index.html $PAGE_DIR/$TIMESTAMP.liquid
 
           # ci
