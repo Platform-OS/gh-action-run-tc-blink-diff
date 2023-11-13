@@ -99,7 +99,14 @@ runs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "Link to test report: ${{ steps.deploy-diff-rep.outputs.REPORT_URL }}"
+                    "text": "Tested *branch*: *${{ github.ref_name }}*"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Link* to test report: ${{ steps.deploy-diff-rep.outputs.REPORT_URL }}"
                   }
                 }
               ]
