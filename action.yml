@@ -45,13 +45,6 @@ runs:
           set -e
           npx testcafe-blink-diff ./test/snapshots/Snapshots ./test/visual-tests/generated --compare base:actual --threshold 5 --force
 
-      - uses: actions/upload-artifact@v3
-        name: upload diff report 
-        if: ${{ !inputs.skip }}
-        with: 
-          name: diff-report
-          path: test/visual-tests/generated
-
       - name: deploy diff report
         id: deploy-diff-rep
         if: ${{ !inputs.skip }}
@@ -70,6 +63,7 @@ runs:
           mv Snapshot* $IMAGE_DIR
 
           sed -i "s/Snapshot/\/assets\/images\/$TIMESTAMP\/Snapshot/g" index.html
+          sed 's/body {.*}/html {height: 100%;} body { font-family: Helvetica; height: 100%; overflow: scroll }/' index.html -i
           mv index.html $PAGE_DIR/$TIMESTAMP.liquid
 
           # ci
