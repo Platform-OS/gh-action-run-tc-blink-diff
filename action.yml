@@ -92,7 +92,7 @@ runs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "testcafe blink diff visual regression test result: ${{ job.status }}"
+                    "text": "testcafe blink diff visual regression *test result*: *${{ job.status }}*"
                   }
                 },
                 {
