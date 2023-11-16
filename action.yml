@@ -47,7 +47,7 @@ runs:
 
       - name: deploy diff report
         id: deploy-diff-rep
-        if: ${{ !inputs.skip }}
+        if: success() || failure()
         shell: sh
         run: |
           set -eu
