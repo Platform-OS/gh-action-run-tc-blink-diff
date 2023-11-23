@@ -91,16 +91,26 @@ runs:
                 },
                 {
                   "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "testcafe blink diff visual regression *test result*: *${{ job.status }}*"
-                  }
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "${{ github.ref_name }}"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "${{ github.actor }}"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "${{ github.sha }}"
+                      }
+                    ]
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "Tested *branch*: *${{ github.ref_name }}*"
+                    "text": "testcafe blink diff visual regression *test result*: *${{ job.status }}*"
                   }
                 },
                 {
