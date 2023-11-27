@@ -43,10 +43,10 @@ runs:
         shell: sh
         run: |
           set -eu
-          COMPARE_OUTPUT=$(npx testcafe-blink-diff \
-            ./${{ inputs.npm-prefix }}/visual-tests/snapshots/${{ env.view }}/Snapshots ./${{ inputs.npm-prefix }}/visual-tests/generated/${{ env.view }} \
-            --compare base-${{ env.view }}:actual-${{ env.view }} --threshold 5 2>&1)
-          echo $COMPARE_OUTPUT
+          npx testcafe-blink-diff \
+            ./${{ inputs.npm-prefix }}/visual-tests/snapshots/${{ env.view }}/Snapshots \
+            ./${{ inputs.npm-prefix }}/visual-tests/generated/${{ env.view }} \
+            --compare base-${{ env.view }}:actual-${{ env.view }} --threshold 5
 
       - name: deploy diff report
         id: deploy-diff-rep
