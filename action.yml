@@ -76,7 +76,7 @@ runs:
           echo REPORT_URL=$MPKIT_URL/$TIMESTAMP >> $GITHUB_OUTPUT
 
       - name: Send success notification
-        id: slack
+        id: slack-success
         if: success()
         uses: slackapi/slack-github-action@v1.24.0
         with:
@@ -130,7 +130,7 @@ runs:
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       - name: Send failure notification
-        id: slack
+        id: slack-failure
         if: failure()
         uses: slackapi/slack-github-action@v1.24.0
         with:
@@ -180,7 +180,7 @@ runs:
               ]
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ inputs.slack-webhook-url }
+          SLACK_WEBHOOK_URL: ${{ inputs.slack-webhook-url }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       - name: after ${{ inputs.test-name }}
