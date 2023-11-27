@@ -50,7 +50,7 @@ runs:
 
       - name: deploy diff report
         id: deploy-diff-rep
-        if: success() || failure()
+        if: success()
         shell: sh
         run: |
           set -eu
@@ -75,9 +75,9 @@ runs:
 
           echo REPORT_URL=$MPKIT_URL/$TIMESTAMP >> $GITHUB_OUTPUT
 
-      - name: Send custom JSON data to Slack workflow
+      - name: Send success notification
         id: slack
-        if: success() || failure()
+        if: success()
         uses: slackapi/slack-github-action@v1.24.0
         with:
           payload: |
@@ -113,7 +113,7 @@ runs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "testcafe blink diff visual regression *test result*: *${{ job.status }}*"
+                    "text": "testcafe blink diff visual regression *test result*: *${{ job.status }}* :white-check-mark"
                   }
                 },
                 {
@@ -126,7 +126,61 @@ runs:
               ]
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ inputs.slack-webhook-url }} 
+          SLACK_WEBHOOK_URL: ${{ inputs.slack-webhook-url }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      - name: Send failure notification
+        id: slack
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "channel": "eng-qa",
+              "text": "Visual regression tests",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ github.repository }}"
+                  }
+                },
+                {
+                  "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "Branch: ${{ github.ref_name }}"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "Author: ${{ github.actor }}"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "Commit: <https://github.com/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>"
+                      }
+                    ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "testcafe blink diff visual regression *test result*: *${{ job.status }}* :x:"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Link* to test report: ${{ steps.deploy-diff-rep.outputs.REPORT_URL }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ inputs.slack-webhook-url }
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       - name: after ${{ inputs.test-name }}
