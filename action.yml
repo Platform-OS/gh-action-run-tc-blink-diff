@@ -90,7 +90,7 @@ runs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "testcafe blink diff visual regression tests"
+                    "text": "testcafe blink diff visual regression tests for ${{ env.view }}"
                   }
                 },
                 {
@@ -146,7 +146,7 @@ runs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "testcafe blink diff visual regression tests"
+                    "text": "testcafe blink diff visual regression tests for ${{ env.view }}"
                   }
                 },
                 {
