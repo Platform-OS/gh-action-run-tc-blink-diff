@@ -73,6 +73,7 @@ runs:
           MPKIT_URL=$UPLOAD_HOST
           pos-cli deploy -p
 
+          echo SHORT_SHA=${{ github.sha }} | cut -c1-8 >> $GITHUB_OUTPUT
           echo REPORT_URL=$MPKIT_URL/$TIMESTAMP >> $GITHUB_OUTPUT
 
       - name: Send success notification
@@ -89,38 +90,40 @@ runs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "${{ github.repository }}"
+                    "text": "testcafe blink diff visual regression tests"
                   }
                 },
                 {
                   "type": "section",
-                    "fields": [
-                      {
-                        "type": "mrkdwn",
-                        "text": "Branch: ${{ github.ref_name }}"
-                      },
-                      {
-                        "type": "mrkdwn",
-                        "text": "Author: ${{ github.actor }}"
-                      },
-                      {
-                        "type": "mrkdwn",
-                        "text": "Commit: <https://github.com/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>"
-                      }
-                    ]
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Repository:*\n${{ github.ref_name }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch:*\n${{ github.ref_name }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Commit:*\n<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|${{ steps.deploy-diff-rep.outputs.SHORT_SHA }}>"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Actor:*\n${{ github.actor }}\n"
+                    }
+                  ]
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "testcafe blink diff visual regression *test result*: *${{ job.status }}* :white-check-mark"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Link* to test report: ${{ steps.deploy-diff-rep.outputs.REPORT_URL }}"
+                    "text": "<${{ steps.deploy-diff-rep.outputs.REPORT_URL }}|View test report>"
                   }
                 }
               ]
@@ -143,38 +146,40 @@ runs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "${{ github.repository }}"
+                    "text": "testcafe blink diff visual regression tests"
                   }
                 },
                 {
                   "type": "section",
-                    "fields": [
-                      {
-                        "type": "mrkdwn",
-                        "text": "Branch: ${{ github.ref_name }}"
-                      },
-                      {
-                        "type": "mrkdwn",
-                        "text": "Author: ${{ github.actor }}"
-                      },
-                      {
-                        "type": "mrkdwn",
-                        "text": "Commit: <https://github.com/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>"
-                      }
-                    ]
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Repository:*\n${{ github.ref_name }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch:*\n${{ github.ref_name }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Commit:*\n<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|${{ steps.deploy-diff-rep.outputs.SHORT_SHA }}>"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Actor:*\n${{ github.actor }}\n"
+                    }
+                  ]
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "testcafe blink diff visual regression *test result*: *${{ job.status }}* :x:"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Link* to test report: ${{ steps.deploy-diff-rep.outputs.REPORT_URL }}"
+                    "text": ":x: Action failed! <https://github.com/${{ github.repository }}/actions/runs/{{ github.run_id }}|View the failed action run>"
                   }
                 }
               ]
