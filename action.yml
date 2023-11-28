@@ -73,7 +73,7 @@ runs:
           MPKIT_URL=$UPLOAD_HOST
           pos-cli deploy -p
 
-          echo SHORT_SHA=${{ github.sha }} | cut -c1-8 >> $GITHUB_OUTPUT
+          echo SHORT_SHA=`${{ github.sha }} | cut -c1-8` >> $GITHUB_OUTPUT
           echo REPORT_URL=$MPKIT_URL/$TIMESTAMP >> $GITHUB_OUTPUT
 
       - name: Send success notification
@@ -98,7 +98,7 @@ runs:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*Repository:*\n${{ github.ref_name }}"
+                      "text": "*Repository:*\n${{ github.repository }}"
                     },
                     {
                       "type": "mrkdwn",
@@ -154,7 +154,7 @@ runs:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*Repository:*\n${{ github.ref_name }}"
+                      "text": "*Repository:*\n${{ github.repository }}"
                     },
                     {
                       "type": "mrkdwn",
