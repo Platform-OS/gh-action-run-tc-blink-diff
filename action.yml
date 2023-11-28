@@ -123,7 +123,7 @@ runs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "<${{ steps.deploy-diff-rep.outputs.REPORT_URL }}|View test report>"
+                    "text": ":white_check_mark: <${{ steps.deploy-diff-rep.outputs.REPORT_URL }}|View test report>"
                   }
                 }
               ]
@@ -179,7 +179,7 @@ runs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":x: Action failed! <https://github.com/${{ github.repository }}/actions/runs/{{ github.run_id }}|View the failed action run>"
+                    "text": ":x: Action failed! <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View the failed action run>"
                   }
                 }
               ]
