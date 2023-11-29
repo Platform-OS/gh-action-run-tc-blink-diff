@@ -47,7 +47,7 @@ runs:
           npx testcafe-blink-diff \
             ./${{ inputs.npm-prefix }}/visual-tests/snapshots/${{ env.view }}/Snapshots \
             ./${{ inputs.npm-prefix }}/visual-tests/generated/${{ env.view }} \
-            --compare base-${{ env.view }}:actual-${{ env.view }} --threshold 5
+            --compare base-${{ env.view }}:actual-${{ env.view }} --threshold 5 --force
 
       - name: deploy diff report
         id: deploy-diff-rep
@@ -111,13 +111,20 @@ runs:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*Commit:*\n<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|${{ steps.deploy-diff-rep.outputs.SHORT_SHA }}>"
+                      "text": "*Commit:*\n<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|{{ github.sha }}>"
                     },
                     {
                       "type": "mrkdwn",
                       "text": "*Actor:*\n${{ github.actor }}\n"
                     }
                   ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View action run>"
+                  }
                 },
                 {
                   "type": "section",
@@ -167,7 +174,7 @@ runs:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*Commit:*\n<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|${{ steps.deploy-diff-rep.outputs.SHORT_SHA }}>"
+                      "text": "*Commit:*\n<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|{{ github.sha }}>"
                     },
                     {
                       "type": "mrkdwn",
@@ -179,7 +186,14 @@ runs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":x: Action failed! <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View the failed action run>"
+                    "text": "<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View action run>"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":x: <${{ steps.deploy-diff-rep.outputs.REPORT_URL }}|View test report>"
                   }
                 }
               ]
