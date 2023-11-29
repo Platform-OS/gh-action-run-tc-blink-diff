@@ -82,7 +82,7 @@ runs:
         with:
           payload: |
             {
-              "channel": "eng-qa",
+              "channel": "test-reports",
               "text": "Visual regression tests",
               "blocks": [
                 {
@@ -145,7 +145,7 @@ runs:
         with:
           payload: |
             {
-              "channel": "eng-qa",
+              "channel": "test-reports",
               "text": "Visual regression tests",
               "blocks": [
                 {
@@ -212,7 +212,7 @@ runs:
         shell: sh
         run: |
           REPORT_TYPE=${{ inputs.test-name }}
-          echo "### FAILED $REPORT_TYPE tests report -> $UPLOAD_HOST/$REPORT_PATH-$REPORT_TYPE" >> $GITHUB_STEP_SUMMARY
+          echo "### FAILED $REPORT_TYPE tests report -> $REPORT_URL" >> $GITHUB_STEP_SUMMARY
 
       - name: skip ${{ inputs.test-name }}
         if: ${{ !!inputs.skip }}
