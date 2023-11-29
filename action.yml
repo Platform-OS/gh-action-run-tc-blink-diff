@@ -43,11 +43,10 @@ runs:
         shell: sh
         run: |
           set -eu
-          echo SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-8) >> $GITHUB_OUTPUT
           npx testcafe-blink-diff \
             ./${{ inputs.npm-prefix }}/visual-tests/snapshots/${{ env.view }}/Snapshots \
             ./${{ inputs.npm-prefix }}/visual-tests/generated/${{ env.view }} \
-            --compare base-${{ env.view }}:actual-${{ env.view }} --threshold 5 --force
+            --compare base-${{ env.view }}:actual-${{ env.view }} --threshold 5
 
       - name: deploy diff report
         id: deploy-diff-rep
@@ -111,7 +110,7 @@ runs:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*Commit:*\n<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|{{ github.sha }}>"
+                      "text": "*Commit:*\n<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>"
                     },
                     {
                       "type": "mrkdwn",
@@ -174,7 +173,7 @@ runs:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*Commit:*\n<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|{{ github.sha }}>"
+                      "text": "*Commit:*\n<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>"
                     },
                     {
                       "type": "mrkdwn",
