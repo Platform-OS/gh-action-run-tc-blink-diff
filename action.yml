@@ -192,7 +192,7 @@ runs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ${{ job.status == "success" && ":white_check_mark: <${{ steps.deploy-diff-rep.outputs.REPORT_URL }}|View test report>" || ":x: <${{ steps.deploy-diff-rep.outputs.REPORT_URL }}|View test report>" }}
+                    "text": "${{ env.result_icon }} <${{ steps.deploy-diff-rep.outputs.REPORT_URL }}|View test report>"
                   }
                 }
               ]
@@ -200,6 +200,7 @@ runs:
         env:
           SLACK_WEBHOOK_URL: ${{ inputs.slack-webhook-url }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          result_icon: ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }}
 
       - name: after ${{ inputs.test-name }}
         if: ${{ inputs.after && !inputs.skip }}
