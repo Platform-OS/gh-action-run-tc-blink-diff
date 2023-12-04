@@ -11,7 +11,7 @@ inputs:
     description: 'slack webhook url'
     required: true
   before:
-    required: true
+    required: false
   after:
     required: false
   skip:
@@ -27,8 +27,11 @@ runs:
         if: ${{ inputs.before && !inputs.skip }}
         shell: sh
         run: |
-          echo "Running the before step"
           ${{ inputs.before }}
+
+      - name: check if directory with base snapshots exists
+        shell: sh
+        run: |
           [ -d ${{ inputs.npm-prefix }}/visual-tests/snapshots ] && { baseDirExists=true } >> "$GITHUB_ENV"
 
       - name: run ${{ inputs.test-name }}
@@ -41,7 +44,7 @@ runs:
           npm run ${{ inputs.test-name }} --prefix ${{ inputs.npm-prefix }}
 
       - name: compare screenshots
-        if: ${{ !inputs.skip }} && sucess()
+        if: ${{ !inputs.skip }}
         shell: sh
         run: |
           set -eu
