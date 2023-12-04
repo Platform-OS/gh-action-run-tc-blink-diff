@@ -28,6 +28,7 @@ runs:
         shell: sh
         run: |
           ${{ inputs.before }}
+          [ -d ${{ inputs.npm-prefix }}/visual-tests/snapshots ] && { baseDirExists=true } >> "$GITHUB_ENV"
 
       - name: run ${{ inputs.test-name }}
         env:
@@ -39,7 +40,7 @@ runs:
           npm run ${{ inputs.test-name }} --prefix ${{ inputs.npm-prefix }}
 
       - name: compare screenshots
-        if: ${{ !inputs.skip }}
+        if: ${{ !inputs.skip }} && $baseDirExists=true
         shell: sh
         run: |
           set -eu
