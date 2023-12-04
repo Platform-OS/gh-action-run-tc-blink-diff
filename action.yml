@@ -32,7 +32,7 @@ runs:
       - name: check if directory with base snapshots exists
         shell: sh
         run: |
-          [ -d ${{ inputs.npm-prefix }}/visual-tests/snapshots ] && { baseDirExists=true } >> "$GITHUB_ENV"
+          [ -d "${{ inputs.npm-prefix }}/visual-tests/snapshots" ] && echo "baseDirExists=true" >> "$GITHUB_ENV"
 
       - name: run ${{ inputs.test-name }}
         env:
