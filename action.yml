@@ -44,9 +44,9 @@ runs:
         run: |
           set -eu
           npx testcafe-blink-diff \
-            ./${{ inputs.npm-prefix }}/visual-tests/snapshots/${{ env.view }}/Snapshots \
-            ./${{ inputs.npm-prefix }}/visual-tests/generated/${{ env.view }} \
-            --compare base-${{ env.view }}:actual-${{ env.view }} --threshold 5
+            ./${{ inputs.npm-prefix }}/visual-tests/snapshots/${{ env.resolution }}/Snapshots \
+            ./${{ inputs.npm-prefix }}/visual-tests/generated/${{ env.resolution }} \
+            --compare base-${{ env.resolution }}:actual-${{ env.resolution }} --threshold 5
 
       - name: deploy diff report
         id: deploy-diff-rep
@@ -56,7 +56,7 @@ runs:
           set -eu
           TIMESTAMP=$(date '+%Y%m%d%H%M%S')
 
-          cd ./${{ inputs.npm-prefix }}/visual-tests/generated/${{ env.view }}
+          cd ./${{ inputs.npm-prefix }}/visual-tests/generated/${{ env.resolution }}
 
           PAGE_DIR=app/views/pages
           IMAGE_DIR=app/assets/images/$TIMESTAMP
@@ -89,7 +89,7 @@ runs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "testcafe blink diff visual regression tests for ${{ env.view }}"
+                    "text": "testcafe blink diff visual regression tests for ${{ env.resolution }}"
                   }
                 },
                 {
