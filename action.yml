@@ -29,15 +29,10 @@ runs:
         run: |
           ${{ inputs.before }}
 
-      - name: check if directory with base snapshots exists
-        shell: sh
-        run: |
-          [ -d "${{ inputs.npm-prefix }}/visual-tests/snapshots/mobile" ] && echo "baseDirExists=true" >> "$GITHUB_ENV"
-
       - name: run ${{ inputs.test-name }}
         env:
           REPORT_TYPE: ${{ inputs.test-name }}
-        if: ( ${{ !inputs.skip }} && $baseDirExists=true )
+        if: ${{ !inputs.skip }}
         shell: sh
         run: |
           set -e
