@@ -36,7 +36,7 @@ runs:
         shell: sh
         run: |
           set -e
-          npm run ${{ inputs.test-name }} --prefix ${{ inputs.npm-prefix }}
+          npm run ${{ inputs.test-name }} --prefix ${{ inputs.npm-prefix }} 
 
       - name: compare screenshots
         if: ${{ !inputs.skip }}
@@ -44,8 +44,8 @@ runs:
         run: |
           set -eu
           npx testcafe-blink-diff \
-            ./${{ inputs.npm-prefix }}/visual-tests/snapshots/${{ env.resolution }}/Snapshots \
-            ./${{ inputs.npm-prefix }}/visual-tests/generated/${{ env.resolution }} \
+            ./tests/visual-tests/snapshots/${{ env.resolution }}/Snapshots \
+            ./tests/visual-tests/generated/${{ env.resolution }} \
             --compare base-${{ env.resolution }}:actual-${{ env.resolution }} --threshold 5
 
       - name: deploy diff report
@@ -56,7 +56,7 @@ runs:
           set -eu
           TIMESTAMP=$(date '+%Y%m%d%H%M%S')
 
-          cd ./${{ inputs.npm-prefix }}/visual-tests/generated/${{ env.resolution }}
+          cd ./tests/visual-tests/generated/${{ env.resolution }}
 
           PAGE_DIR=app/views/pages
           IMAGE_DIR=app/assets/images/$TIMESTAMP
@@ -89,7 +89,7 @@ runs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "testcafe blink diff visual regression tests for ${{ env.resolution }}"
+                    "text": "testcafe blink diff visual regression tests for ${{ env.resolution }} resolution"
                   }
                 },
                 {
