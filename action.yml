@@ -39,6 +39,7 @@ runs:
           npm run ${{ inputs.test-name }} --prefix ${{ inputs.npm-prefix }} 
 
       - name: compare screenshots
+        id: diff-test
         if: ${{ !inputs.skip }}
         shell: sh
         run: |
@@ -137,7 +138,7 @@ runs:
         env:
           SLACK_WEBHOOK_URL: ${{ inputs.slack-webhook-url }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-          result_icon: ${{ steps.deploy-diff-rep.conclusion == 'success' && ':white_check_mark:' || ':x:' }}
+          result_icon: ${{ steps.diff-test.conclusion == 'success' && ':white_check_mark:' || ':x:' }}
 
       - name: after ${{ inputs.test-name }}
         if: ${{ inputs.after && !inputs.skip }}
