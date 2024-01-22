@@ -51,7 +51,8 @@ runs:
             ./tests/visual-tests/snapshots/${{ env.resolution }}/Snapshots \
             ./tests/visual-tests/generated/${{ env.resolution }} \
             --compare base-${{ env.resolution }}{{ project }}:actual-${{ env.resolution }}{{ project }} --threshold 5
-        project: ${{ inputs.project-name && `-${inputs.project-name}` || '' }}
+        env:
+          project: ${{ inputs.project-name && `-${inputs.project-name}` || '' }}
 
       - name: deploy diff report
         id: deploy-diff-rep
