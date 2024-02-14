@@ -4,9 +4,6 @@ inputs:
   base:
     required: true
     description: base branch for PR
-  project-name:
-    description: 'name of a project'
-    required: false
   test-name:
     description: 'test name'
     required: true
@@ -32,9 +29,6 @@ runs:
         run: |
           ${{ inputs.before }}
 
-      - name: set project name
-        run: echo "PROJECT_NAME=${{ inputs.project-name && '-'${{ inputs.project-name }} || '' }}" >> $GITHUB_ENV
-
       - name: run ${{ inputs.test-name }}
         env:
           REPORT_TYPE: ${{ inputs.test-name }}
@@ -53,7 +47,7 @@ runs:
           npx testcafe-blink-diff \
             ./tests/visual-tests/snapshots/${{ env.resolution }}/Snapshots \
             ./tests/visual-tests/generated/${{ env.resolution }} \
-            --compare base-${{ env.resolution }}{{ env.PROJECT_NAME }}:actual-${{ env.resolution }}{{ env.PROJECT_NAME }} --threshold 5
+            --compare base-${{ env.resolution }}:actual-${{ env.resolution }} --threshold 5
 
       - name: deploy diff report
         id: deploy-diff-rep
