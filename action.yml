@@ -63,6 +63,8 @@ runs:
           set -eu
           TIMESTAMP=$(date '+%Y%m%d%H%M%S')
 
+          sleep 5
+
           cd ./tests/visual-tests/generated/${{ env.resolution }}
 
           PAGE_DIR=app/views/pages
