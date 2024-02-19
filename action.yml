@@ -30,9 +30,9 @@ runs:
           ${{ inputs.before }}
 
       - name: run ${{ inputs.test-name }}
+        if: success() || failure()
         env:
           REPORT_TYPE: ${{ inputs.test-name }}
-        if: ${{ !inputs.skip }}
         shell: sh
         run: |
           set -e
@@ -40,7 +40,7 @@ runs:
 
       - name: compare screenshots
         id: diff-test
-        if: ${{ !inputs.skip }}
+        if: success() || failure()
         shell: sh
         run: |
           set -eu
@@ -76,71 +76,7 @@ runs:
           MPKIT_URL=$UPLOAD_HOST
           pos-cli deploy -p
 
-          echo REPORT_URL=$MPKIT_URL/$TIMESTAMP >> $GITHUB_OUTPUT
-
-      - name: Send notification to Slack
-        id: notify-slack
-        if: success() || failure()
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          payload: |
-            {
-              "channel": "test-reports",
-              "text": "Visual regression tests",
-              "blocks": [
-                {
-                  "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "testcafe blink diff visual regression tests for ${{ env.resolution }} resolution"
-                  }
-                },
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Repository:*\n${{ github.repository }}"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Branch:*\n${{ github.ref_name }}"
-                    }
-                  ]
-                },
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Commit:*\n<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Actor:*\n${{ github.actor }}\n"
-                    }
-                  ]
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View action run>"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "${{ env.result_icon }} <${{ steps.deploy-diff-rep.outputs.REPORT_URL }}|View test report>"
-                  }
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ inputs.slack-webhook-url }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-          result_icon: ${{ steps.diff-test.conclusion == 'success' && ':white_check_mark:' || ':x:' }}
+          echo ${{ env.resolution }}_report_url=$MPKIT_URL/$TIMESTAMP >> $GITHUB_ENV
 
       - name: after ${{ inputs.test-name }}
         if: ${{ inputs.after && !inputs.skip }}
