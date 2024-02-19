@@ -17,8 +17,14 @@ inputs:
   skip:
     required: false
   npm-prefix:
+    description: 'name of a directory with test-specific dependencies, e.g. "tests"'
     required: false
     default: "."
+outputs:
+  diff-report-url:
+    description: 'url of diff report'
+    value: ${{ steps.deploy-diff-rep.outputs.diff-report-url }}
+
 runs:
   using: "composite"
   steps:
@@ -76,7 +82,7 @@ runs:
           MPKIT_URL=$UPLOAD_HOST
           pos-cli deploy -p
 
-          echo ${{ env.resolution }}_report_url=$MPKIT_URL/$TIMESTAMP >> $GITHUB_ENV
+          echo diff-report-url=$MPKIT_URL/$TIMESTAMP >> $GITHUB_OUTPUT
 
       - name: after ${{ inputs.test-name }}
         if: ${{ inputs.after && !inputs.skip }}
