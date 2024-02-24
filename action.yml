@@ -21,9 +21,15 @@ inputs:
     required: false
     default: "."
 outputs:
+  desktop-diff-conclusion:
+    description: 'conclusion of the step'
+    value: ${{ steps.get-conclusion.outputs.desktop-diff-conclusion }}
   desktop-diff-report-url:
     description: 'url of desktop diff report'
     value: ${{ steps.deploy-diff-report.outputs.desktop-diff-report-url }}
+  mobile-diff-conclusion:
+    description: 'conclusion of the step'
+    value: ${{ steps.get-conclusion.outputs.mobile-diff-conclusion }}
   mobile-diff-report-url:
     description: 'url of desktop diff report'
     value: ${{ steps.deploy-diff-report.outputs.mobile-diff-report-url }}
@@ -66,8 +72,6 @@ runs:
           set -eu
           TIMESTAMP=$(date '+%Y%m%d%H%M%S')
 
-          sleep 5
-
           cd ./tests/visual-tests/generated/${{ env.resolution }}
 
           PAGE_DIR=app/views/pages
@@ -85,7 +89,15 @@ runs:
           MPKIT_URL=$UPLOAD_HOST
           pos-cli deploy -p
 
-          echo ${{ env.resolution }}-diff-report-url=$MPKIT_URL/$TIMESTAMP >> $GITHUB_OUTPUT
+          echo "${{ env.resolution }}-diff-report-url=$MPKIT_URL/$TIMESTAMP" >> $GITHUB_OUTPUT
+
+      - name: get conclusion of the previous step
+        id: get-conclusion
+        if: success() || failure()
+        shell: sh
+        run: |
+          set -eu
+          echo "${{ env.resolution }}-diff-conclusion=${{ steps.deploy-diff-report.conclusion }}" >> $GITHUB_OUTPUT
 
       - name: after ${{ inputs.test-name }}
         if: ${{ inputs.after && !inputs.skip }}
