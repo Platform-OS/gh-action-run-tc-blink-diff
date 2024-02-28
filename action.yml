@@ -64,6 +64,14 @@ runs:
             ./tests/visual-tests/generated/${{ env.resolution }} \
             --compare base-${{ env.resolution }}:actual-${{ env.resolution }} --threshold 5
 
+      - name: pass the conclusion of the previous step to output context
+        id: get-conclusion
+        if: success() || failure()
+        shell: sh
+        run: |
+          set -eu
+          echo "${{ env.resolution }}-diff-conclusion=${{ steps.diff-test.conclusion }}" >> $GITHUB_OUTPUT
+
       - name: deploy diff report
         id: deploy-diff-report
         if: success() || failure()
@@ -91,13 +99,6 @@ runs:
 
           echo "${{ env.resolution }}-diff-report-url=$MPKIT_URL/$TIMESTAMP" >> $GITHUB_OUTPUT
 
-      - name: get conclusion of the previous step
-        id: get-conclusion
-        if: success() || failure()
-        shell: sh
-        run: |
-          set -eu
-          echo "${{ env.resolution }}-diff-conclusion=${{ steps.deploy-diff-report.conclusion }}" >> $GITHUB_OUTPUT
 
       - name: after ${{ inputs.test-name }}
         if: ${{ inputs.after && !inputs.skip }}
