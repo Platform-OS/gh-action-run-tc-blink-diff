@@ -60,7 +60,7 @@ runs:
         run: |
           set -eu
           npx testcafe-blink-diff \
-            ./tests/visual-tests/snapshots/${{ env.resolution }}/Snapshots \
+            ./tests/visual-tests/snapshots/${{ env.resolution }} \
             ./tests/visual-tests/generated/${{ env.resolution }} \
             --compare base-${{ env.resolution }}:actual-${{ env.resolution }} --threshold 5
 
