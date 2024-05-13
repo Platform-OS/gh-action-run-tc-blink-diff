@@ -53,13 +53,6 @@ runs:
           set -e
           npm run ${{ inputs.test-name }} --prefix ${{ inputs.npm-prefix }} 
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: download-base-screenshots
-          download-path: ./tests/visual-tests/snapshots/${{ env.resolution }}
-          github-token: ${{ secrets.POS_CI_REPO_ACCESS_TOKEN }}
-          run-id: 9068302919
-
       - name: compare screenshots
         id: diff-test
         if: success() || failure()
