@@ -7,9 +7,6 @@ inputs:
   test-name:
     description: 'test name'
     required: true
-  slack-webhook-url:
-    description: 'slack webhook url'
-    required: true
   before:
     required: false
   after:
