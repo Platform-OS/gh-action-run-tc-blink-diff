@@ -33,6 +33,12 @@ outputs:
   mobile-diff-report-url:
     description: 'url of desktop diff report'
     value: ${{ steps.deploy-diff-report.outputs.mobile-diff-report-url }}
+  tablet-diff-conclusion:
+    description: 'conclusion of the step'
+    value: ${{ steps.get-conclusion.outputs.tablet-diff-conclusion }}
+  tablet-diff-report-url:
+    description: 'url of desktop diff report'
+    value: ${{ steps.deploy-diff-report.outputs.tablet-diff-report-url }}
 
 runs:
   using: "composite"
