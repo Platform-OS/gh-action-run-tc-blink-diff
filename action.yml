@@ -7,9 +7,6 @@ inputs:
   test-name:
     description: 'test name'
     required: true
-  slack-webhook-url:
-    description: 'slack webhook url'
-    required: true
   before:
     required: false
   after:
@@ -20,6 +17,9 @@ inputs:
     description: 'name of a directory with test-specific dependencies, e.g. "tests"'
     required: false
     default: "."
+  resolution:
+    description: resolution of the screen
+    required: true
 outputs:
   desktop-diff-conclusion:
     description: 'conclusion of the step'
@@ -33,6 +33,12 @@ outputs:
   mobile-diff-report-url:
     description: 'url of desktop diff report'
     value: ${{ steps.deploy-diff-report.outputs.mobile-diff-report-url }}
+  tablet-diff-conclusion:
+    description: 'conclusion of the step'
+    value: ${{ steps.get-conclusion.outputs.tablet-diff-conclusion }}
+  tablet-diff-report-url:
+    description: 'url of desktop diff report'
+    value: ${{ steps.deploy-diff-report.outputs.tablet-diff-report-url }}
 
 runs:
   using: "composite"
@@ -60,9 +66,9 @@ runs:
         run: |
           set -eu
           npx testcafe-blink-diff \
-            ./tests/visual-tests/snapshots/${{ env.resolution }}/Snapshots \
-            ./tests/visual-tests/generated/${{ env.resolution }} \
-            --compare base-${{ env.resolution }}:actual-${{ env.resolution }} --threshold 5
+            ./tests/visual-tests/snapshots/${{ inputs.resolution }}/Snapshots \
+            ./tests/visual-tests/generated/${{ inputs.resolution }} \
+            --compare base-${{ inputs.resolution }}:actual-${{ inputs.resolution }} --threshold 5
 
       - name: pass the conclusion of the previous step to output context
         id: get-conclusion
@@ -70,7 +76,7 @@ runs:
         shell: sh
         run: |
           set -eu
-          echo "${{ env.resolution }}-diff-conclusion=${{ steps.diff-test.conclusion }}" >> $GITHUB_OUTPUT
+          echo "${{ inputs.resolution }}-diff-conclusion=${{ steps.diff-test.conclusion }}" >> $GITHUB_OUTPUT
 
       - name: deploy diff report
         id: deploy-diff-report
@@ -80,7 +86,7 @@ runs:
           set -eu
           TIMESTAMP=$(date '+%Y%m%d%H%M%S')
 
-          cd ./tests/visual-tests/generated/${{ env.resolution }}
+          cd ./tests/visual-tests/generated/${{ inputs.resolution }}
 
           PAGE_DIR=app/views/pages
           IMAGE_DIR=app/assets/images/$TIMESTAMP
@@ -97,7 +103,7 @@ runs:
           MPKIT_URL=$UPLOAD_HOST
           pos-cli deploy -p
 
-          echo "${{ env.resolution }}-diff-report-url=$MPKIT_URL/$TIMESTAMP" >> $GITHUB_OUTPUT
+          echo "${{ inputs.resolution }}-diff-report-url=$MPKIT_URL/$TIMESTAMP" >> $GITHUB_OUTPUT
 
 
       - name: after ${{ inputs.test-name }}
@@ -111,7 +117,8 @@ runs:
         shell: sh
         run: |
           REPORT_TYPE=${{ inputs.test-name }}
-          echo "### FAILED $REPORT_TYPE tests report -> ${{ steps.deploy-diff-rep.outputs.REPORT_URL }}" >> $GITHUB_STEP_SUMMARY
+          echo "### $REPORT_TYPE tests report" >> $GITHUB_STEP_SUMMARY
+          echo "#### Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
 
       - name: skip ${{ inputs.test-name }}
         if: ${{ !!inputs.skip }}
