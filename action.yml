@@ -103,8 +103,8 @@ runs:
           MPKIT_URL=$UPLOAD_HOST
           pos-cli deploy -p
 
-          echo "${{ inputs.resolution }}-diff-report-url=$MPKIT_URL/$TIMESTAMP" >> $GITHUB_OUTPUT
-
+          echo "REPORT_URL=$MPKIT_URL/$TIMESTAMP" >> $GITHUB_OUTPUT
+          echo "${{ inputs.resolution }}-diff-report-url=$REPORT_URL" >> $GITHUB_OUTPUT
 
       - name: after ${{ inputs.test-name }}
         if: ${{ inputs.after && !inputs.skip }}
@@ -119,6 +119,7 @@ runs:
           REPORT_TYPE=${{ inputs.test-name }}
           echo "### $REPORT_TYPE tests report" >> $GITHUB_STEP_SUMMARY
           echo "#### Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "#### Test report URL: ${{ steps.deploy-diff-report.outputs.REPORT_URL }}" >> $GITHUB_STEP_SUMMARY
 
       - name: skip ${{ inputs.test-name }}
         if: ${{ !!inputs.skip }}
